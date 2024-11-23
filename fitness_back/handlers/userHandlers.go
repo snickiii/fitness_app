@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"auth-service/DTO"
 	"auth-service/models"
 	"auth-service/utils"
 	"encoding/json"
@@ -15,7 +16,7 @@ import (
 // @Tags User
 // @Accept json
 // @Produce json
-// @Success 200 {object} models.User "User profile and targets retrieved successfully"
+// @Success 200 {object} ProfileResponse "User profile and targets retrieved successfully"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal server error"
@@ -37,21 +38,14 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	profile := models.ProfileResponse{
+	profile := DTO.ProfileResponse{
 		UserID:   user.UserID,
 		Email:    user.Email,
 		Name:     user.Name,
 		Username: user.Username,
-		Role:     user.Role,
-		Targets:  user.Targets,
 	}
 
 	json.NewEncoder(w).Encode(profile)
-}
-
-type UpdatePasswordRequest struct {
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
 }
 
 // UpdatePassword обновляет пароль пользователя
@@ -77,7 +71,7 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) { //Добавить
 		return
 	}
 
-	var req UpdatePasswordRequest
+	var req DTO.UpdatePasswordRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -115,10 +109,6 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) { //Добавить
 	json.NewEncoder(w).Encode(map[string]string{"message": "Password updated successfully"})
 }
 
-type UpdateEmailRequest struct {
-	NewEmail string `json:"new_email"`
-}
-
 // UpdateEmail обновляет адрес электронной почты пользователя
 // @Summary Update user email
 // @Description Allows an authenticated user to update their email address
@@ -142,7 +132,7 @@ func UpdateEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req UpdateEmailRequest
+	var req DTO.UpdateEmailRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -165,10 +155,6 @@ func UpdateEmail(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Email updated successfully"})
-}
-
-type UpdateNameRequest struct {
-	NewName string `json:"new_name"`
 }
 
 // UpdateName обновляет имя пользователя
@@ -194,7 +180,7 @@ func UpdateName(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req UpdateNameRequest
+	var req DTO.UpdateNameRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -217,10 +203,6 @@ func UpdateName(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Name updated successfully"})
-}
-
-type UpdateUsernameRequest struct {
-	NewUsername string `json:"new_username"`
 }
 
 // UpdateUsername обновляет имя пользователя
@@ -247,7 +229,7 @@ func UpdateUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req UpdateUsernameRequest
+	var req DTO.UpdateUsernameRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Printf("Error decoding request body: %v", err)
 		http.Error(w, "Invalid request", http.StatusBadRequest)

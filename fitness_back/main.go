@@ -44,7 +44,6 @@ func main() {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	dbSSLMode := os.Getenv("DB_SSLMODE")
-	scanURL := os.Getenv("SCAN_URL")
 	serverPort := os.Getenv("SERVER_PORT")
 
 	dbURI := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s password=%s", dbHost, dbPort, dbUser, dbName, dbSSLMode, dbPassword)
@@ -74,15 +73,6 @@ func main() {
 	userRouter.HandleFunc("/update-email", handlers.UpdateEmail).Methods("PUT")
 	userRouter.HandleFunc("/update-name", handlers.UpdateName).Methods("PUT")
 	userRouter.HandleFunc("/update-username", handlers.UpdateUsername).Methods("PUT")
-
-	userRouter.HandleFunc("/targets", handlers.CreateTarget).Methods("POST")
-	userRouter.HandleFunc("/targets", handlers.UpdateTarget).Methods("PUT").Queries("id", "{id}")
-	userRouter.HandleFunc("/targets", handlers.DeleteTarget).Methods("DELETE").Queries("id", "{id}")
-
-	proxyRouter := r.PathPrefix("/").Subrouter()
-	proxyRouter.Use(middlewares.AuthMiddleware)
-
-	proxyRouter.HandleFunc("/scan", handlers.ProxyHandler(scanURL))
 
 	log.Printf("Server started at %s", serverPort)
 	if err := http.ListenAndServe(serverPort, r); err != nil {
