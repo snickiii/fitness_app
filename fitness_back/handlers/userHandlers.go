@@ -42,6 +42,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		UserID:   user.UserID,
 		Email:    user.Email,
 		Name:     user.Name,
+		SurName:  user.Name,
 		Username: user.Username,
 	}
 
