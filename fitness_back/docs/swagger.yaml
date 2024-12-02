@@ -1,5 +1,40 @@
 basePath: /
 definitions:
+  DTO.ProfileResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      surName:
+        type: string
+      userID:
+        type: integer
+      username:
+        type: string
+    type: object
+  DTO.UpdateEmailRequest:
+    properties:
+      new_email:
+        type: string
+    type: object
+  DTO.UpdateNameRequest:
+    properties:
+      new_name:
+        type: string
+    type: object
+  DTO.UpdatePasswordRequest:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  DTO.UpdateUsernameRequest:
+    properties:
+      new_username:
+        type: string
+    type: object
   handlers.LoginData:
     properties:
       password:
@@ -7,66 +42,61 @@ definitions:
       username:
         type: string
     type: object
-  handlers.UpdateEmailRequest:
+  models.DailyRation:
     properties:
-      new_email:
+      createdAt:
         type: string
-    type: object
-  handlers.UpdateNameRequest:
-    properties:
-      new_name:
-        type: string
-    type: object
-  handlers.UpdatePasswordRequest:
-    properties:
-      new_password:
-        type: string
-      old_password:
-        type: string
-    type: object
-  handlers.UpdateUsernameRequest:
-    properties:
-      new_username:
-        type: string
-    type: object
-  models.RoleType:
-    enum:
-    - tech
-    - consumer
-    type: string
-    x-enum-varnames:
-    - RoleTech
-    - RoleConsumer
-  models.Target:
-    properties:
-      addressPull:
-        type: string
-      domainPull:
-        type: string
-      targetID:
+      dailyRationID:
         type: integer
-      targetName:
+      upperStr:
         type: string
       userID:
         type: integer
     type: object
   models.User:
     properties:
+      dailyRation:
+        items:
+          $ref: '#/definitions/models.DailyRation'
+        type: array
       email:
         type: string
       name:
         type: string
-      passwordHash:
+      password:
         type: string
-      role:
-        $ref: '#/definitions/models.RoleType'
-      targets:
+      surName:
+        type: string
+      userCharacteristics:
         items:
-          $ref: '#/definitions/models.Target'
+          $ref: '#/definitions/models.UserCharacteristics'
         type: array
       userID:
         type: integer
       username:
+        type: string
+    type: object
+  models.UserCharacteristics:
+    properties:
+      createdAt:
+        type: string
+      endurance:
+        type: string
+      flexibility:
+        type: string
+      height:
+        type: string
+      imt:
+        type: string
+      lowerStr:
+        type: string
+      upperStr:
+        type: string
+      userCharacteristicsID:
+        type: integer
+      userID:
+        type: integer
+      weight:
         type: string
     type: object
 host: localhost:8000
@@ -153,7 +183,7 @@ paths:
         "200":
           description: User profile and targets retrieved successfully
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/DTO.ProfileResponse'
         "401":
           description: Unauthorized
           schema:
@@ -171,135 +201,6 @@ paths:
       summary: Get user profile and associated targets
       tags:
       - User
-  /user/targets:
-    delete:
-      consumes:
-      - application/json
-      description: Delete the target if it is associated with the authenticated user
-        based on JWT claims.
-      parameters:
-      - description: Target ID
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Target deleted successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid request
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "403":
-          description: Forbidden
-          schema:
-            type: string
-        "404":
-          description: Target not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Delete a target associated with the current user
-      tags:
-      - Target
-    post:
-      consumes:
-      - application/json
-      description: Create a new target using the provided data and associate it with
-        the authenticated user based on JWT claims.
-      parameters:
-      - description: Target details
-        in: body
-        name: target
-        required: true
-        schema:
-          $ref: '#/definitions/models.Target'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Target created successfully
-          schema:
-            $ref: '#/definitions/models.Target'
-        "400":
-          description: Invalid request
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Create a new target and associate it with the current user
-      tags:
-      - Target
-    put:
-      consumes:
-      - application/json
-      description: Update the target details if the target is associated with the
-        authenticated user
-      parameters:
-      - description: Target ID
-        in: query
-        name: id
-        required: true
-        type: string
-      - description: Updated target details
-        in: body
-        name: target
-        required: true
-        schema:
-          $ref: '#/definitions/models.Target'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Target updated successfully
-          schema:
-            $ref: '#/definitions/models.Target'
-        "400":
-          description: Invalid request
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "403":
-          description: Forbidden
-          schema:
-            type: string
-        "404":
-          description: Target not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Update an existing target associated with the current user
-      tags:
-      - Target
   /user/update-email:
     put:
       consumes:
@@ -311,7 +212,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.UpdateEmailRequest'
+          $ref: '#/definitions/DTO.UpdateEmailRequest'
       produces:
       - application/json
       responses:
@@ -351,7 +252,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.UpdateNameRequest'
+          $ref: '#/definitions/DTO.UpdateNameRequest'
       produces:
       - application/json
       responses:
@@ -392,7 +293,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.UpdatePasswordRequest'
+          $ref: '#/definitions/DTO.UpdatePasswordRequest'
       produces:
       - application/json
       responses:
@@ -433,7 +334,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handlers.UpdateUsernameRequest'
+          $ref: '#/definitions/DTO.UpdateUsernameRequest'
       produces:
       - application/json
       responses:

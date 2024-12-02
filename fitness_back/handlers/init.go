@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"auth-service/models"
+	"fitness_back/models"
 	"github.com/jinzhu/gorm"
 )
 

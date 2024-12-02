@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"auth-service/DTO"
-	"auth-service/models"
-	"auth-service/utils"
 	"encoding/json"
+	"fitness_back/DTO"
+	"fitness_back/models"
+	"fitness_back/utils"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -16,7 +16,7 @@ import (
 // @Tags User
 // @Accept json
 // @Produce json
-// @Success 200 {object} ProfileResponse "User profile and targets retrieved successfully"
+// @Success 200 {object} DTO.ProfileResponse "User profile and targets retrieved successfully"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal server error"
@@ -55,7 +55,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param body body UpdatePasswordRequest true "Update password request"
+// @Param body body DTO.UpdatePasswordRequest true "Update password request"
 // @Success 200 {string} string "Password updated successfully"
 // @Failure 400 {string} string "Invalid request"
 // @Failure 401 {string} string "Invalid old password"
@@ -116,7 +116,7 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) { //Добавить
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param body body UpdateEmailRequest true "Update email request"
+// @Param body body DTO.UpdateEmailRequest true "Update email request"
 // @Success 200 {string} string "Email updated successfully"
 // @Failure 400 {string} string "Invalid request"
 // @Failure 401 {string} string "Unauthorized"
@@ -164,7 +164,7 @@ func UpdateEmail(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param body body UpdateNameRequest true "Update name request"
+// @Param body body DTO.UpdateNameRequest true "Update name request"
 // @Success 200 {string} string "Name updated successfully"
 // @Failure 400 {string} string "Invalid request"
 // @Failure 401 {string} string "Unauthorized"
@@ -212,7 +212,7 @@ func UpdateName(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param body body UpdateUsernameRequest true "Update username request"
+// @Param body body DTO.UpdateUsernameRequest true "Update username request"
 // @Success 200 {string} string "Username updated successfully"
 // @Failure 400 {string} string "Invalid request"
 // @Failure 401 {string} string "Unauthorized"

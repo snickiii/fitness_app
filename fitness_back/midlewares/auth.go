@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"auth-service/utils"
 	"context"
+	"fitness_back/utils"
 	"log"
 	"net/http"
 	"strings"

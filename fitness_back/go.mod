@@ -1,4 +1,4 @@
-module auth-service
+module fitness_back
 
 go 1.22.6
 

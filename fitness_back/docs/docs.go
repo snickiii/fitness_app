@@ -132,7 +132,7 @@ const docTemplate = `{
                     "200": {
                         "description": "User profile and targets retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/DTO.ProfileResponse"
                         }
                     },
                     "401": {
@@ -143,202 +143,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "User not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/targets": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update the target details if the target is associated with the authenticated user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Target"
-                ],
-                "summary": "Update an existing target associated with the current user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Target ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated target details",
-                        "name": "target",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Target"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Target updated successfully",
-                        "schema": {
-                            "$ref": "#/definitions/models.Target"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Target not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new target using the provided data and associate it with the authenticated user based on JWT claims.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Target"
-                ],
-                "summary": "Create a new target and associate it with the current user",
-                "parameters": [
-                    {
-                        "description": "Target details",
-                        "name": "target",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Target"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Target created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/models.Target"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete the target if it is associated with the authenticated user based on JWT claims.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Target"
-                ],
-                "summary": "Delete a target associated with the current user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Target ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Target deleted successfully",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Target not found",
                         "schema": {
                             "type": "string"
                         }
@@ -377,7 +181,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.UpdateEmailRequest"
+                            "$ref": "#/definitions/DTO.UpdateEmailRequest"
                         }
                     }
                 ],
@@ -440,7 +244,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.UpdateNameRequest"
+                            "$ref": "#/definitions/DTO.UpdateNameRequest"
                         }
                     }
                 ],
@@ -503,7 +307,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.UpdatePasswordRequest"
+                            "$ref": "#/definitions/DTO.UpdatePasswordRequest"
                         }
                     }
                 ],
@@ -566,7 +370,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.UpdateUsernameRequest"
+                            "$ref": "#/definitions/DTO.UpdateUsernameRequest"
                         }
                     }
                 ],
@@ -612,6 +416,61 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "DTO.ProfileResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "surName": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "DTO.UpdateEmailRequest": {
+            "type": "object",
+            "properties": {
+                "new_email": {
+                    "type": "string"
+                }
+            }
+        },
+        "DTO.UpdateNameRequest": {
+            "type": "object",
+            "properties": {
+                "new_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "DTO.UpdatePasswordRequest": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "DTO.UpdateUsernameRequest": {
+            "type": "object",
+            "properties": {
+                "new_username": {
+                    "type": "string"
+                }
+            }
+        },
         "handlers.LoginData": {
             "type": "object",
             "properties": {
@@ -623,65 +482,16 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.UpdateEmailRequest": {
+        "models.DailyRation": {
             "type": "object",
             "properties": {
-                "new_email": {
-                    "type": "string"
-                }
-            }
-        },
-        "handlers.UpdateNameRequest": {
-            "type": "object",
-            "properties": {
-                "new_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "handlers.UpdatePasswordRequest": {
-            "type": "object",
-            "properties": {
-                "new_password": {
+                "createdAt": {
                     "type": "string"
                 },
-                "old_password": {
-                    "type": "string"
-                }
-            }
-        },
-        "handlers.UpdateUsernameRequest": {
-            "type": "object",
-            "properties": {
-                "new_username": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.RoleType": {
-            "type": "string",
-            "enum": [
-                "tech",
-                "consumer"
-            ],
-            "x-enum-varnames": [
-                "RoleTech",
-                "RoleConsumer"
-            ]
-        },
-        "models.Target": {
-            "type": "object",
-            "properties": {
-                "addressPull": {
-                    "type": "string"
-                },
-                "domainPull": {
-                    "type": "string"
-                },
-                "targetID": {
+                "dailyRationID": {
                     "type": "integer"
                 },
-                "targetName": {
+                "upperStr": {
                     "type": "string"
                 },
                 "userID": {
@@ -692,28 +502,69 @@ const docTemplate = `{
         "models.User": {
             "type": "object",
             "properties": {
+                "dailyRation": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DailyRation"
+                    }
+                },
                 "email": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "passwordHash": {
+                "password": {
                     "type": "string"
                 },
-                "role": {
-                    "$ref": "#/definitions/models.RoleType"
+                "surName": {
+                    "type": "string"
                 },
-                "targets": {
+                "userCharacteristics": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Target"
+                        "$ref": "#/definitions/models.UserCharacteristics"
                     }
                 },
                 "userID": {
                     "type": "integer"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserCharacteristics": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "endurance": {
+                    "type": "string"
+                },
+                "flexibility": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "imt": {
+                    "type": "string"
+                },
+                "lowerStr": {
+                    "type": "string"
+                },
+                "upperStr": {
+                    "type": "string"
+                },
+                "userCharacteristicsID": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "weight": {
                     "type": "string"
                 }
             }

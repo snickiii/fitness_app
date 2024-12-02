@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"auth-service/models"
-	"auth-service/utils"
 	"encoding/json"
+	"fitness_back/models"
+	"fitness_back/utils"
 	"log"
 	"net/http"
 

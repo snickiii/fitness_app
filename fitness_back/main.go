@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "auth-service/docs" // Импортируем сгенерированные Swagger-файлы
-	"auth-service/handlers"
-	middlewares "auth-service/midlewares"
-	"auth-service/utils"
+	_ "fitness_back/docs" // Импортируем сгенерированные Swagger-файлы
+	"fitness_back/handlers"
+	middlewares "fitness_back/midlewares"
+	"fitness_back/utils"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -75,7 +75,8 @@ func main() {
 	userRouter.HandleFunc("/update-username", handlers.UpdateUsername).Methods("PUT")
 
 	log.Printf("Server started at %s", serverPort)
-	if err := http.ListenAndServe(serverPort, r); err != nil {
+	if err := http.ListenAndServe(":"+serverPort, r); err != nil {
 		log.Fatalf("failed start server: %v", err)
 	}
+
 }
