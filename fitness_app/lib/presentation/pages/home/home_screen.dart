@@ -88,6 +88,19 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            '/foodDiaryScreen'
+          );
+        },
+        backgroundColor: Color(0xFFBBF246),
+        child: Icon(
+          Icons.dinner_dining_outlined,
+          size: 30,
+        ),
+      ),
     );
   }
 
