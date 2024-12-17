@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final isAuthorized = await _checkAuthorization();
-  runApp(FitnessApp(initialRoute: isAuthorized ? '/home' : '/foodDiaryScreen'));
+  runApp(FitnessApp(initialRoute: isAuthorized ? '/home' : '/login'));
 }
 
 class FitnessApp extends StatelessWidget {
