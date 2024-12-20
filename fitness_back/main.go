@@ -68,6 +68,7 @@ func main() {
 	userRouter.Use(middlewares.AuthMiddleware)
 
 	userRouter.HandleFunc("/profile", handlers.ProfileHandler).Methods("GET")
+	userRouter.HandleFunc("/ration-history", handlers.RationHistoryHandler).Methods("GET")
 
 	userRouter.HandleFunc("/update-password", handlers.UpdatePassword).Methods("PUT")
 	userRouter.HandleFunc("/update-email", handlers.UpdateEmail).Methods("PUT")

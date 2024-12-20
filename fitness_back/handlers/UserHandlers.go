@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-// ProfileHandler возвращает информацию о профиле пользователя и связанных с ним целевых объектах
-// @Summary Get user profile and associated targets
-// @Description Retrieves the profile of the authenticated user along with the targets associated with their account
+// ProfileHandler возвращает информацию о профиле пользователя
+// @Summary Get user profile
+// @Description Retrieves the profile of the authenticated user
 // @Tags User
 // @Accept json
 // @Produce json
-// @Success 200 {object} DTO.ProfileResponse "User profile and targets retrieved successfully"
+// @Success 200 {object} DTO.ProfileResponse "User profile retrieved successfully"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal server error"
@@ -32,7 +32,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	if err := db.Preload("Targets").First(&user, claims.UserID).Error; err != nil {
+	if err := db.Preload("User").First(&user, claims.UserID).Error; err != nil {
 		log.Printf("User not found: %v", err)
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
@@ -42,7 +42,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		UserID:   user.UserID,
 		Email:    user.Email,
 		Name:     user.Name,
-		SurName:  user.Name,
+		SurName:  user.SurName,
 		Username: user.Username,
 	}
 
