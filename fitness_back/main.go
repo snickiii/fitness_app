@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fitness_back/docs" // Импортируем сгенерированные Swagger-файлы
+	_ "fitness_back/docs"
 	"fitness_back/handlers"
 	middlewares "fitness_back/midlewares"
 	"fitness_back/utils"
@@ -13,7 +13,10 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
+	"strings"
 )
 
 // @title Auth Service API
@@ -69,7 +72,8 @@ func main() {
 
 	userRouter.HandleFunc("/search-food", handlers.FoodDataHandler).Methods("GET")
 	userRouter.HandleFunc("/ration-history", handlers.RationHistoryHandler).Methods("GET")
-	userRouter.HandleFunc("/add-meal", handlers.CreateMeal).Methods("POST")
+	userRouter.HandleFunc("/meal", handlers.CreateMeal).Methods("POST")
+	userRouter.HandleFunc("/meal", handlers.DeleteMeal).Methods("DELETE")
 
 	userRouter.HandleFunc("/profile", handlers.ProfileHandler).Methods("GET")
 	userRouter.HandleFunc("/update-password", handlers.UpdatePassword).Methods("PUT")
@@ -77,9 +81,35 @@ func main() {
 	userRouter.HandleFunc("/update-name", handlers.UpdateName).Methods("PUT")
 	userRouter.HandleFunc("/update-username", handlers.UpdateUsername).Methods("PUT")
 
+	setupWorkoutProxy(r)
+
 	log.Printf("Server started at %s", serverPort)
 	if err := http.ListenAndServe(":"+serverPort, r); err != nil {
 		log.Fatalf("failed start server: %v", err)
 	}
 
+}
+
+func setupWorkoutProxy(r *mux.Router) {
+	targetURL := os.Getenv("TRAINING_URL")
+	target, err := url.Parse(targetURL)
+	if err != nil {
+		log.Fatalf("Failed to parse target URL: %v", err)
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(target)
+
+	workoutRouter := r.PathPrefix("/workout").Subrouter()
+	workoutRouter.Use(middlewares.AuthMiddleware)
+
+	workoutRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/workout") {
+			r.URL.Scheme = target.Scheme
+			r.URL.Host = target.Host
+			proxy.ServeHTTP(w, r)
+			return
+		}
+
+		http.NotFound(w, r)
+	})
 }

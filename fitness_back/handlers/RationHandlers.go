@@ -85,6 +85,55 @@ func CreateMeal(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(meal)
 }
 
+// DeleteMeal прием пищи, связанный с текущим пользователем
+// @Summary Delete a meal associated with the current user
+// @Description Delete the meal if it is associated with the authenticated user based on JWT claims.
+// @Tags Ration
+// @Accept  json
+// @Produce  json
+// @Param id query string true "Daily ration ID"
+// @Success 200 {string} string "Meal deleted successfully"
+// @Failure 400 {string} string "Invalid request"
+// @Failure 401 {string} string "Unauthorized"
+// @Failure 403 {string} string "Forbidden"
+// @Failure 404 {string} string "Target not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /user/targets [delete]
+// @Security BearerAuth
+func DeleteMeal(w http.ResponseWriter, r *http.Request) {
+
+	claims, ok := r.Context().Value("claims").(*utils.Claims)
+	if !ok {
+		log.Println("Error extracting claims from context")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	idStr := r.URL.Query().Get("id")
+
+	var meal models.DailyRation
+	if err := db.First(&meal, idStr).Error; err != nil {
+		log.Printf("Meal not found: %v", err)
+		http.Error(w, "Meal not found", http.StatusNotFound)
+		return
+	}
+
+	if meal.UserID != claims.UserID {
+		log.Println("Unauthorized access to target")
+		http.Error(w, "Unauthorized access", http.StatusForbidden)
+		return
+	}
+
+	if err := db.Delete(&meal).Error; err != nil {
+		log.Printf("Error deleting meal: %v", err)
+		http.Error(w, "Error deleting meal", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("Meal %d deleted successfully", meal.DailyRationID)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Meal deleted successfully"})
+}
+
 // FoodDataHandler
 // @Summary Получить информацию о пище
 // @Description Запрашивает данные о пище с API и возвращает информацию в формате JSON

@@ -14,7 +14,7 @@ import (
 func FetchFoodDataFromAPI(searchExp string) (*DTO.FindResponse, error) {
 
 	authorizationToken := os.Getenv("AUTHORIZTION_TOKEN")
-	apiBaseURL := os.Getenv("API_URL")
+	apiBaseURL := os.Getenv("FATAPI_URL")
 	url := fmt.Sprintf("%s&search_expression=%s", apiBaseURL, searchExp)
 
 	client := &http.Client{}
