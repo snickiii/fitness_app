@@ -110,6 +110,95 @@ const docTemplate = `{
                 }
             }
         },
+        "/search-food": {
+            "get": {
+                "description": "Запрашивает данные о пище с API и возвращает информацию в формате JSON",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ration"
+                ],
+                "summary": "Получить информацию о пище",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DTO.FindResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error message",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/add-meal": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new meal using the provided data and associate it with the authenticated user based on JWT claims.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ration"
+                ],
+                "summary": "Create a new meal and associate it with the current user",
+                "parameters": [
+                    {
+                        "description": "Ration details",
+                        "name": "ration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DailyRation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Meal add successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.DailyRation"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/profile": {
             "get": {
                 "security": [
@@ -117,7 +206,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieves the profile of the authenticated user along with the targets associated with their account",
+                "description": "Retrieves the profile of the authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -127,10 +216,10 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "Get user profile and associated targets",
+                "summary": "Get user profile",
                 "responses": {
                     "200": {
-                        "description": "User profile and targets retrieved successfully",
+                        "description": "User profile retrieved successfully",
                         "schema": {
                             "$ref": "#/definitions/DTO.ProfileResponse"
                         }
@@ -143,6 +232,119 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "User not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/ration-history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the ration history of the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ration"
+                ],
+                "summary": "Get user profile",
+                "responses": {
+                    "200": {
+                        "description": "User ration history retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/DTO.RationHistory"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/targets": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete the meal if it is associated with the authenticated user based on JWT claims.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ration"
+                ],
+                "summary": "Delete a meal associated with the current user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Daily ration ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Meal deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Target not found",
                         "schema": {
                             "type": "string"
                         }
@@ -416,6 +618,46 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "DTO.FatsecretMeal": {
+            "type": "object",
+            "properties": {
+                "calories": {
+                    "type": "number"
+                },
+                "carbs": {
+                    "type": "number"
+                },
+                "fat": {
+                    "type": "number"
+                },
+                "foodDescription": {
+                    "type": "string"
+                },
+                "foodID": {
+                    "type": "integer"
+                },
+                "foodName": {
+                    "type": "string"
+                },
+                "portion": {
+                    "type": "string"
+                },
+                "protein": {
+                    "type": "number"
+                }
+            }
+        },
+        "DTO.FindResponse": {
+            "type": "object",
+            "properties": {
+                "findResponse": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DTO.FatsecretMeal"
+                    }
+                }
+            }
+        },
         "DTO.ProfileResponse": {
             "type": "object",
             "properties": {
@@ -433,6 +675,17 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "DTO.RationHistory": {
+            "type": "object",
+            "properties": {
+                "objects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DailyRation"
+                    }
                 }
             }
         },
@@ -491,7 +744,7 @@ const docTemplate = `{
                 "dailyRationID": {
                     "type": "integer"
                 },
-                "upperStr": {
+                "ration": {
                     "type": "string"
                 },
                 "userID": {
@@ -555,7 +808,7 @@ const docTemplate = `{
                 "lowerStr": {
                     "type": "string"
                 },
-                "upperStr": {
+                "ration": {
                     "type": "string"
                 },
                 "userCharacteristicsID": {

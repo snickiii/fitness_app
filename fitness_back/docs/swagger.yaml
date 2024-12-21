@@ -1,5 +1,31 @@
 basePath: /
 definitions:
+  DTO.FatsecretMeal:
+    properties:
+      calories:
+        type: number
+      carbs:
+        type: number
+      fat:
+        type: number
+      foodDescription:
+        type: string
+      foodID:
+        type: integer
+      foodName:
+        type: string
+      portion:
+        type: string
+      protein:
+        type: number
+    type: object
+  DTO.FindResponse:
+    properties:
+      findResponse:
+        items:
+          $ref: '#/definitions/DTO.FatsecretMeal'
+        type: array
+    type: object
   DTO.ProfileResponse:
     properties:
       email:
@@ -12,6 +38,13 @@ definitions:
         type: integer
       username:
         type: string
+    type: object
+  DTO.RationHistory:
+    properties:
+      objects:
+        items:
+          $ref: '#/definitions/models.DailyRation'
+        type: array
     type: object
   DTO.UpdateEmailRequest:
     properties:
@@ -48,7 +81,7 @@ definitions:
         type: string
       dailyRationID:
         type: integer
-      upperStr:
+      ration:
         type: string
       userID:
         type: integer
@@ -90,7 +123,7 @@ definitions:
         type: string
       lowerStr:
         type: string
-      upperStr:
+      ration:
         type: string
       userCharacteristicsID:
         type: integer
@@ -171,17 +204,75 @@ paths:
       summary: Register a new user
       tags:
       - Auth
-  /user/profile:
+  /search-food:
     get:
       consumes:
       - application/json
-      description: Retrieves the profile of the authenticated user along with the
-        targets associated with their account
+      description: Запрашивает данные о пище с API и возвращает информацию в формате
+        JSON
       produces:
       - application/json
       responses:
         "200":
-          description: User profile and targets retrieved successfully
+          description: OK
+          schema:
+            $ref: '#/definitions/DTO.FindResponse'
+        "500":
+          description: error message
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить информацию о пище
+      tags:
+      - Ration
+  /user/add-meal:
+    post:
+      consumes:
+      - application/json
+      description: Create a new meal using the provided data and associate it with
+        the authenticated user based on JWT claims.
+      parameters:
+      - description: Ration details
+        in: body
+        name: ration
+        required: true
+        schema:
+          $ref: '#/definitions/models.DailyRation'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Meal add successfully
+          schema:
+            $ref: '#/definitions/models.DailyRation'
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a new meal and associate it with the current user
+      tags:
+      - Ration
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the profile of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/DTO.ProfileResponse'
         "401":
@@ -198,9 +289,82 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Get user profile and associated targets
+      summary: Get user profile
       tags:
       - User
+  /user/ration-history:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the ration history of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User ration history retrieved successfully
+          schema:
+            $ref: '#/definitions/DTO.RationHistory'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get user profile
+      tags:
+      - Ration
+  /user/targets:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the meal if it is associated with the authenticated user
+        based on JWT claims.
+      parameters:
+      - description: Daily ration ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Meal deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Target not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete a meal associated with the current user
+      tags:
+      - Ration
   /user/update-email:
     put:
       consumes:

@@ -140,7 +140,7 @@ func DeleteMeal(w http.ResponseWriter, r *http.Request) {
 // @Tags Ration
 // @Accept json
 // @Produce json
-// @Success 200 {object} FindResponse
+// @Success 200 {object} DTO.FindResponse
 // @Failure 500 {object} map[string]string "error message"
 // @Router /search-food [get]
 func FoodDataHandler(w http.ResponseWriter, r *http.Request) {
