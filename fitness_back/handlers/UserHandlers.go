@@ -32,7 +32,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	if err := db.Preload("User").First(&user, claims.UserID).Error; err != nil {
+	if err := db.First(&user, claims.UserID).Error; err != nil {
 		log.Printf("User not found: %v", err)
 		http.Error(w, "User not found", http.StatusNotFound)
 		return

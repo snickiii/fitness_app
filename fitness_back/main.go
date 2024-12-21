@@ -67,9 +67,11 @@ func main() {
 	userRouter := r.PathPrefix("/user").Subrouter()
 	userRouter.Use(middlewares.AuthMiddleware)
 
-	userRouter.HandleFunc("/profile", handlers.ProfileHandler).Methods("GET")
+	userRouter.HandleFunc("/search-food", handlers.FoodDataHandler).Methods("GET")
 	userRouter.HandleFunc("/ration-history", handlers.RationHistoryHandler).Methods("GET")
+	userRouter.HandleFunc("/add-meal", handlers.CreateMeal).Methods("POST")
 
+	userRouter.HandleFunc("/profile", handlers.ProfileHandler).Methods("GET")
 	userRouter.HandleFunc("/update-password", handlers.UpdatePassword).Methods("PUT")
 	userRouter.HandleFunc("/update-email", handlers.UpdateEmail).Methods("PUT")
 	userRouter.HandleFunc("/update-name", handlers.UpdateName).Methods("PUT")
