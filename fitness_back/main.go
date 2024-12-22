@@ -70,6 +70,9 @@ func main() {
 	userRouter := r.PathPrefix("/user").Subrouter()
 	userRouter.Use(middlewares.AuthMiddleware)
 
+	userRouter.HandleFunc("/char-history", handlers.CharsHistoryHandler).Methods("GET")
+	userRouter.HandleFunc("/add-chars", handlers.CreateChars).Methods("POST")
+
 	userRouter.HandleFunc("/search-food", handlers.FoodDataHandler).Methods("GET")
 	userRouter.HandleFunc("/ration-history", handlers.RationHistoryHandler).Methods("GET")
 	userRouter.HandleFunc("/meal", handlers.CreateMeal).Methods("POST")
