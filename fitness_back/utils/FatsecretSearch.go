@@ -35,6 +35,8 @@ func FetchFoodDataFromAPI(searchExp string) (*DTO.FindResponse, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
+	} else {
+		log.Printf("API Response:\n%s", body)
 	}
 
 	var apiResponse struct {
